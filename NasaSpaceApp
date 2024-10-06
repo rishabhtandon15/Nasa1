@@ -1,0 +1,103 @@
+// File: ClimateGenderDistribution.java
+import java.util.Scanner;
+import java.util.Random;
+
+class ClimateGenderDistribution {
+    // ANSI color codes for console styling
+    private static final String RESET = "\u001B[0m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String BLUE = "\u001B[34m";
+    private static final String PURPLE = "\u001B[35m";
+    private static final String CYAN = "\u001B[36m";
+    private static final String YELLOW = "\u001B[33m";
+    private static final String RED = "\u001B[31m";
+
+    private static final double BASELINE_MALE_RATIO = 0.514;
+    private static final double MAX_TEMPERATURE_IMPACT = 0.02;
+    private static final double MAX_DISASTER_IMPACT = 0.03;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        printHeader();
+
+        while (true) {
+            System.out.println(CYAN + "\n╔════════════════════════════════════╗");
+            System.out.println("║         ENTER REGION DETAILS        ║");
+            System.out.println("╚════════════════════════════════════╝" + RESET);
+            char character = scanner.next().charAt(0);
+            // Get temperature data
+            System.out.print(BLUE + "\n📊 Average annual temperature (°C): " + RESET);
+            double temperature = scanner.nextDouble();
+
+            // Get climate disaster frequency
+            System.out.print(RED + "🌋 Natural disaster frequency (1-10): " + RESET);
+            int disasterFrequency = scanner.nextInt();
+
+            // Get development index
+            System.out.print(GREEN + "📈 Development index (1-10): " + RESET);
+            int developmentIndex = scanner.nextInt();
+
+            // Calculate gender distribution
+            double maleRatio = calculateGenderRatio(temperature, disasterFrequency, developmentIndex);
+            double femaleRatio = 1 - maleRatio;
+
+            // Add some randomness
+            maleRatio += (random.nextDouble() - 0.5) * 0.01;
+            femaleRatio = 1 - maleRatio;
+
+            // Display results with fancy formatting
+            displayResults(maleRatio, femaleRatio);
+
+            // Display impact factors
+            displayImpactFactors(temperature, disasterFrequency, developmentIndex);
+
+            // Continue prompt
+            System.out.print(PURPLE + "\n🔄 Would you like to try another prediction? (yes/no): " + RESET);
+            String answer = scanner.next().toLowerCase();
+            if (answer.startsWith("n")) {
+                break;
+            }
+        }
+
+        scanner.close();
+        System.out.println(GREEN + "\n✨ Thank you for using the Climate-Based Gender Distribution Predictor! ✨" + RESET);
+    }
+
+    private static void printHeader() {
+        System.out.println(YELLOW + """
+        ╔══════════════════════════════════════════════════╗
+        ║     CLIMATE-BASED GENDER DISTRIBUTION TOOL       ║
+        ╠══════════════════════════════════════════════════╣
+        ║         Analyzing Climate Impact on Gender       ║
+        ╚══════════════════════════════════════════════════╝
+        """ + RESET);
+    }
+
+    private static void displayResults(double maleRatio, double femaleRatio) {
+        System.out.println(PURPLE + "\n╔════════════════════════════════════╗");
+        System.out.println("║     PREDICTED DISTRIBUTION          ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.printf("║  👨 Male:   %5.1f%%               ║\n", maleRatio * 100);
+        System.out.printf("║  👩 Female: %5.1f%%               ║\n", femaleRatio * 100);
+        System.out.println("╚════════════════════════════════════╝" + RESET);
+    }
+
+    private static double calculateGenderRatio(double temperature, int disasterFrequency, int developmentIndex) {
+        // Original calculation logic remains the same
+        double ratio = BASELINE_MALE_RATIO;
+        double tempDiff = Math.abs(temperature - 20);
+        double tempImpact = (tempDiff / 30) * MAX_TEMPERATURE_IMPACT;
+        ratio += tempImpact;
+        double disasterImpact = (disasterFrequency / 10.0) * MAX_DISASTER_IMPACT;
+        ratio -= disasterImpact;
+        double developmentFactor = developmentIndex / 10.0;
+        ratio = ratio * (0.95 + (developmentFactor * 0.1));
+        return Math.max(0.45, Math.min(0.55, ratio));
+    }
+
+    private static void displayImpactFactors(double temperature, int disasterFrequency, int developmentIndex) {
+        System.out.println(CYAN + "\n╔════════════════════════════════════╗");
+        System.out.println("║         IMPACT ANALYSIS            ║");
+        System.out.println("╚════════════════════════════════════╝" + RESET);
